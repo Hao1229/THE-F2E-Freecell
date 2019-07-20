@@ -1,0 +1,32 @@
+@charset "UTF-8";
+body {
+  font-family: PT Sans !important;
+}
+
+/*字體顏色與hover效果*/
+.text-black {
+  color: #00FFCE !important;
+}
+
+.text-red {
+  color: #A617FF !important;
+}
+
+.black-hover:hover {
+  color: #00FFCE !important;
+}
+
+.red-hover:hover {
+  color: #A617FF !important;
+}
+
+.pointer:hover {
+  cursor: pointer;
+}
+
+/*porker存放區設計*/
+.cardArea {
+  width: 112px;
+  height: 173px;
+}
+/*# sourceMappingURL=all.css.map */

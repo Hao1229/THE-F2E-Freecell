@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>THE-F2E-Freecell</title>
+    <link rel="shortcut icon" href="https://i.imgur.com/zTe6Vvs.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/all.css">
+</head>
+
+<body>
+    <div class="container-fluid px-0">
+        <!-- 頂部Navbar -->
+        <nav class="bg-dark d-flex align-items-center border-bottom">
+            <h3 class="font-weight-bold font-italic p-2 d-inline-block mr-auto ml-5"><span
+                    class="text-black">FREE</span><span class="text-red">CELL</span></h3>
+            <span class="text-white font-weight-bold font-italic h3 mr-auto" style="margin-left: 150px;">00:30</span>
+            <div class="d-inline-block mr-5">
+                <span class="text-white h5 mr-3 pointer black-hover"><img src="icons/ic_undo_24px.svg"
+                        class="mr-1">UNDO</span>
+                <span class="text-white h5 mr-3 pointer red-hover"><img src="icons/ic_pause_24px.svg"
+                        class="mr-1">PAUSE</span>
+                <span class="text-white h5 mr-3 pointer black-hover"><img src="icons/ic_loop_24px.svg"
+                        class="mr-1">RESTART</span>
+            </div>
+        </nav>
+        <!-- 主要遊戲區 -->
+        <section class="bg-dark" style="height: 800px;">
+            <div class="container" style="height: 800px;">
+                <!-- 上排暫存區與完成區 -->
+                <div class="row pt-5">
+                    <div class="col-6 d-flex">
+                        <div
+                            class="cardArea mr-4 bg-secondary d-flex justify-content-center align-items-center rounded">
+                            <img src="icons/spade-24px.svg" style="opacity: 0.8"></div>
+                        <div
+                            class="cardArea mr-4 bg-secondary d-flex justify-content-center align-items-center rounded">
+                            <img src="icons/heart-24px.svg" style="opacity: 0.8"></div>
+                        <div
+                            class="cardArea mr-4 bg-secondary d-flex justify-content-center align-items-center rounded">
+                            <img src="icons/diamond-24px.svg" style="opacity: 0.8"></div>
+                        <div
+                            class="cardArea mr-4 bg-secondary d-flex justify-content-center align-items-center rounded">
+                            <img src="icons/club-24px.svg" style="opacity: 0.8"></div>
+                    </div>
+                    <div class="col-6 d-flex">
+                        <div class="cardArea mr-4 bg-secondary rounded"></div>
+                        <div class="cardArea mr-4 bg-secondary rounded"></div>
+                        <div class="cardArea mr-4 bg-secondary rounded"></div>
+                        <div class="cardArea mr-4 bg-secondary rounded"></div>
+                    </div>
+                </div>
+                <!-- 下排隨機擺放區 -->
+                <div class="row pt-5">
+                    <div class="col-6 d-flex">
+                        <div class="cardArea mr-4"><img src="porkerimg/card-spade-1.svg"></div>
+                        <div class="cardArea mr-4 bg-dark border rounded"></div>
+                        <div class="cardArea mr-4 bg-dark border rounded"></div>
+                        <div class="cardArea mr-4 bg-dark border rounded"></div>
+                    </div>
+                    <div class="col-6 d-flex">
+                        <div class="cardArea mr-4"><img src="porkerimg/card-spade-13.svg"></div>
+                        <div class="cardArea mr-4 bg-dark border rounded"></div>
+                        <div class="cardArea mr-4 bg-dark border rounded"></div>
+                        <div class="cardArea mr-4 bg-dark border rounded"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+
+    <script src="js/all.js"></script>
+</body>
+
+</html>

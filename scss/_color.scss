@@ -1,0 +1,20 @@
+$porkercolorBlack:#00FFCE; //黑色花色
+$porkercolorRed:#A617FF;   //紅色花色
+
+
+/*字體顏色與hover效果*/
+.text-black{
+    color: $porkercolorBlack !important;
+}
+
+.text-red{
+    color: $porkercolorRed !important;
+}
+
+.black-hover:hover{
+    color:$porkercolorBlack !important;
+}
+
+.red-hover:hover{
+    color:$porkercolorRed !important;
+}
