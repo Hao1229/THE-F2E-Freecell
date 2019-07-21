@@ -69,7 +69,6 @@ function startGame() {
 
 
 
-
     /*將牌渲染到畫面上*/
     let gamingArea = document.getElementById('gamingArea');
 
@@ -86,26 +85,31 @@ function startGame() {
     function putCard() {
         cardbigGroup.forEach(function (section, sectionNum) {
             let cardbiggroupPart = document.createElement('div');
-            cardbiggroupPart.className = 'col-6 d-flex'
+            cardbiggroupPart.className = 'col-6 d-flex w-100'
             section.forEach(function (item, index) {
                 let cardGroup = document.createElement('div');
                 cardGroup.className = 'relative w-100'
                 item.forEach(function (el, num) {
                     let oneCard = document.createElement('div');
-                    oneCard.className = 'cardArea mr-4 absolute';
+                    oneCard.className = 'cardArea absolute';
                     oneCard.card = el;
                     oneCard.group = index;
-                    oneCard.style = `top:${num*30}px`
+                    oneCard.style.transition = 'all .3s'
+                    oneCard.style.top = '-1000px';
+                    oneCard.style.left = '-2000px';
+                    setTimeout(function () {
+                        oneCard.style.top = num * 30 + 'px';
+                        oneCard.style.left = '0px'
+                    }, index * num * 30)
                     oneCard.innerHTML = `<img src="pokerimg/card-${judgeColor(el)}-${el % 13}.svg">`
                     cardGroup.appendChild(oneCard);
                 })
                 cardbiggroupPart.appendChild(cardGroup)
             })
             gamingArea.appendChild(cardbiggroupPart);
-        })
+        });  
     }
     putCard();
-
 }
 startGame();
 
