@@ -1,4 +1,3 @@
-
 /*定義一個函式來執行遊戲*/
 function startGame() {
     //完成區域左上角
@@ -26,6 +25,7 @@ function startGame() {
     isgamePause = false
     isFinished = false
     isTemporary = false
+    isRefresh = false
 
     /*隨機發牌設計*/
     function shuffle(array) {
@@ -98,7 +98,10 @@ function startGame() {
             cardbiggroupPart.className = 'col-6 d-flex w-100'
             section.forEach(function (item, index) {
                 let cardGroup = document.createElement('div');
-                cardGroup.className = 'relative w-100'
+                cardGroup.className = 'relative w-100';
+                cardGroup.style.height = '1000px'
+                cardGroup.group = index;
+                cardGroup.section = sectionNum;
                 item.forEach(function (el, num) {
                     let oneCard = document.createElement('div');
                     // if (!isgamePause && num + 1 == item.length) {
@@ -110,13 +113,18 @@ function startGame() {
                     // oneCard.color = judgeColor(el);
                     // oneCard.section = sectionNum;
                     // oneCard.group = index;
-                    oneCard.style.transition = 'all .3s'
-                    oneCard.style.top = '-1000px';
-                    oneCard.style.left = '-2000px';
-                    setTimeout(function () {
+                    if (!isRefresh) {
+                        oneCard.style.transition = 'all .3s'
+                        oneCard.style.top = '-1000px';
+                        oneCard.style.left = '-2000px';
+                        setTimeout(function () {
+                            oneCard.style.top = num * 30 + 'px';
+                            oneCard.style.left = '0px'
+                        }, index * num * 30)
+                    } else {
                         oneCard.style.top = num * 30 + 'px';
                         oneCard.style.left = '0px'
-                    }, index * num * 30)
+                    }
                     // oneCard.innerHTML = `<img src="pokerimg/card-${judgeColor(el)}-${el % 13}.svg" draggable = false class="${judgeColor(el)} ${el % 13}">`
                     let cardImg = document.createElement('img');
                     cardImg.draggable = false
@@ -133,6 +141,7 @@ function startGame() {
                 })
                 cardbiggroupPart.appendChild(cardGroup)
             })
+
             gamingArea.appendChild(cardbiggroupPart);
         });
 
@@ -161,6 +170,7 @@ function startGame() {
             finished.appendChild(completedDeck);
 
         })
+
     }
 
     storefinishCard()
@@ -178,6 +188,16 @@ function startGame() {
     storetempCard();
 
     /*拖曳效果各事件觸發函式*/
+    function refreshWindow() {
+        isRefresh = true
+        finished.innerHTML = ''
+        temporary.innerHTML = ''
+        gamingArea.innerHTML = ''
+        putCard();
+        storefinishCard();
+        storetempCard();
+
+    }
 
     function dragStart(e) {
         e.defaultPrevented;
@@ -205,7 +225,9 @@ function startGame() {
         ondropCard = e.target.card;
         ondropGroup = e.target.group;
         ondropSection = e.target.section;
+
         console.log(ondropCard,ondropGroup,ondropSection)
+
         if (ondropCard === ondragCard) {
             return
         }
@@ -221,19 +243,26 @@ function startGame() {
         }
     };
 
-    // function dragEnd(e){
-    //     if(isgamePause){
-    //         return
-    //     }
-    //     cardbigGroup[ondragSection][ondragGroup].pop();
-    //     cardbigGroup[]
-    // }
+    function dragEnd(e) {
+        if (isgamePause) {
+            return
+        }
+        if (!isFinished && !isTemporary) {
+            let moveCard = cardbigGroup[ondragSection][ondragGroup].pop();
+            cardbigGroup[ondropSection][ondropGroup].push(moveCard);
+            // console.log(cardbigGroup[ondragSection][ondragGroup],moveCard,cardbigGroup[ondropSection][ondropGroup])
+        }
+
+        refreshWindow();
+    }
+
+
     /*拖曳效果事件監聽*/
     let container = document.getElementById('container');
     container.addEventListener('dragstart', dragStart);
     container.addEventListener('dragenter', dragEnter);
     container.addEventListener('dragleave', dragLeave);
-    // container.addEventListener('dragend',dragEnd)
+    container.addEventListener('dragend', dragEnd)
     // let spadeFinish = document.getElementById('spade');
     // let heartFinish = document.getElementById('heart');
     // let diamondFinish = document.getElementById('diamond');
@@ -245,4 +274,3 @@ function startGame() {
 
 }
 startGame();
-
