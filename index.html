@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <div class="container-fluid px-0">
+    <div class="container-fluid px-0" id="container">
         <!-- 頂部Navbar -->
         <nav class="bg-dark d-flex align-items-center border-bottom">
             <h3 class="font-weight-bold font-italic p-2 d-inline-block mr-auto ml-5"><span
@@ -30,33 +30,33 @@
             </div>
         </nav>
         <!-- 主要遊戲區 -->
-        <section class="bg-dark" style="height: 800px;">
-            <div class="container" style="height: 800px;">
+        <section class="bg-dark" style="height: 1000px;">
+            <div class="container" style="height: 1000px;" id="ground">
                 <!-- 上排暫存區與完成區 -->
                 <div class="row pt-5">
-                    <div class="col-6 d-flex">
-                        <div
-                            class="cardArea mr-4 bg-secondary d-flex justify-content-center align-items-center rounded">
+                    <div class="col-6 d-flex" id="finished">
+                        <!-- <div
+                            class="cardArea mr-4 bg-secondary d-flex justify-content-center align-items-center rounded" >
                             <img src="icons/spade-24px.svg" style="opacity: 0.8"></div>
                         <div
-                            class="cardArea mr-4 bg-secondary d-flex justify-content-center align-items-center rounded">
+                            class="cardArea mr-4 bg-secondary d-flex justify-content-center align-items-center rounded" id="heart">
                             <img src="icons/heart-24px.svg" style="opacity: 0.8"></div>
                         <div
-                            class="cardArea mr-4 bg-secondary d-flex justify-content-center align-items-center rounded">
+                            class="cardArea mr-4 bg-secondary d-flex justify-content-center align-items-center rounded" id="diamond">
                             <img src="icons/diamond-24px.svg" style="opacity: 0.8"></div>
                         <div
-                            class="cardArea mr-4 bg-secondary d-flex justify-content-center align-items-center rounded">
-                            <img src="icons/club-24px.svg" style="opacity: 0.8"></div>
+                            class="cardArea mr-4 bg-secondary d-flex justify-content-center align-items-center rounded" id="club">
+                            <img src="icons/club-24px.svg" style="opacity: 0.8"></div> -->
                     </div>
-                    <div class="col-6 d-flex">
+                    <div class="col-6 d-flex" id="temporary">
+                        <!-- <div class="cardArea mr-4 bg-secondary rounded"></div>
                         <div class="cardArea mr-4 bg-secondary rounded"></div>
                         <div class="cardArea mr-4 bg-secondary rounded"></div>
-                        <div class="cardArea mr-4 bg-secondary rounded"></div>
-                        <div class="cardArea mr-4 bg-secondary rounded"></div>
+                        <div class="cardArea mr-4 bg-secondary rounded"></div> -->
                     </div>
                 </div>
                 <!-- 下排隨機擺放區 -->
-                <div class="row pt-5" id="gamingArea">
+                <div class="row pt-5" id="gamingArea" >
                     
                 </div>
             </div>
