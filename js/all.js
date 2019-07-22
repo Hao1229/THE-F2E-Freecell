@@ -4,7 +4,7 @@ function startGame() {
     //完成區域左上角
     let finishArea = [[], [], [], []];
     //卡片暫放區(每一格只能放一張)右上角
-    let temporaryArea = [[],[],[],[]];
+    let temporaryArea = [[], [], [], []];
     //主要遊戲區共8排
     let maingameArea = [
         [], //7張
@@ -101,14 +101,15 @@ function startGame() {
                 cardGroup.className = 'relative w-100'
                 item.forEach(function (el, num) {
                     let oneCard = document.createElement('div');
-                    if (!isgamePause && num + 1 == item.length) {
-                        oneCard.draggable = true;
-                    }
-                    oneCard.card = `${judgeColor(el)} ${el % 13}`;
+                    // if (!isgamePause && num + 1 == item.length) {
+                    //     oneCard.draggable = true;
+                    //     cardImg.draggable = true
+                    // }
+                    // oneCard.card = `${judgeColor(el)} ${el % 13}`;
                     oneCard.className = 'cardArea absolute';
-                    oneCard.color = judgeColor(el);
-                    oneCard.section = sectionNum;
-                    oneCard.group = index;
+                    // oneCard.color = judgeColor(el);
+                    // oneCard.section = sectionNum;
+                    // oneCard.group = index;
                     oneCard.style.transition = 'all .3s'
                     oneCard.style.top = '-1000px';
                     oneCard.style.left = '-2000px';
@@ -116,29 +117,40 @@ function startGame() {
                         oneCard.style.top = num * 30 + 'px';
                         oneCard.style.left = '0px'
                     }, index * num * 30)
-                    oneCard.innerHTML = `<img src="pokerimg/card-${judgeColor(el)}-${el % 13}.svg" draggable = false class="${judgeColor(el)} ${el % 13}">`
+                    // oneCard.innerHTML = `<img src="pokerimg/card-${judgeColor(el)}-${el % 13}.svg" draggable = false class="${judgeColor(el)} ${el % 13}">`
+                    let cardImg = document.createElement('img');
+                    cardImg.draggable = false
+                    cardImg.card = el;
+                    cardImg.section = sectionNum;
+                    cardImg.group = index;
+                    cardImg.src = `pokerimg/card-${judgeColor(el)}-${el % 13}.svg`;
+                    if (!isgamePause && num + 1 == item.length) {
+                        oneCard.draggable = true;
+                        cardImg.draggable = true
+                    }
+                    oneCard.appendChild(cardImg)
                     cardGroup.appendChild(oneCard);
                 })
                 cardbiggroupPart.appendChild(cardGroup)
             })
             gamingArea.appendChild(cardbiggroupPart);
         });
-        
+
     };
     putCard();
 
     /*上方完成牌區渲染*/
-    function sortColor(areaNum){
-        if(areaNum == 0){
+    function sortColor(areaNum) {
+        if (areaNum == 0) {
             return 'spade'
-        }else if(areaNum == 1){
+        } else if (areaNum == 1) {
             return 'heart'
-        }else if(areaNum == 2){
+        } else if (areaNum == 2) {
             return 'diamond'
-        }else if (areaNum == 3){
+        } else if (areaNum == 3) {
             return 'club'
         }
-    }   
+    }
     let finished = document.getElementById('finished')
     function storefinishCard() {
         finishArea.forEach(function (item, index) {
@@ -155,8 +167,8 @@ function startGame() {
 
     /*上方暫放牌區渲染*/
     let temporary = document.getElementById('temporary')
-    function storetempCard(){
-        temporaryArea.forEach(function(item,index){
+    function storetempCard() {
+        temporaryArea.forEach(function (item, index) {
             let temporaryDeck = document.createElement('div');
             temporaryDeck.className = 'cardArea mr-4 bg-secondary rounded';
             temporary.appendChild(temporaryDeck);
@@ -175,40 +187,53 @@ function startGame() {
         ondragCard = e.target.card;
         ondragGroup = e.target.group;
         ondragSection = e.target.section;
+        // console.log(ondragCard,ondragGroup,ondragSection)
     };
 
     function dragEnter(e) {
         e.defaultPrevented;
-        // console.log(e.target)
-        if(e.target.id === 'gamingArea'){
+        // console.log(e.target.card,e.target.group,e.target.section)
+        if (e.target.id === 'gamingArea') {
             return
         }
-        if(e.target.id === 'finished'){
-            console.log('456')
+        if (e.target.id === 'finished') {
             isFinished = true
         }
-        if(e.target.id === 'temporary'){
+        if (e.target.id === 'temporary') {
             isTemporary = true
         }
-        ondropCard = e.target.className;
-        if(ondropCard === ondragCard){
+        ondropCard = e.target.card;
+        ondropGroup = e.target.group;
+        ondropSection = e.target.section;
+        console.log(ondropCard,ondropGroup,ondropSection)
+        if (ondropCard === ondragCard) {
             return
         }
-      
+
     };
 
-    function dragLeave(e){
-        if(e.target.id === ground){
-            console.log('123')
+    function dragLeave(e) {
+        if (e.target.id !== finished) {
+            isFinished = false
         }
-    }
+        if (e.target.id !== temporary) {
+            isTemporary = false
+        }
+    };
 
-
+    // function dragEnd(e){
+    //     if(isgamePause){
+    //         return
+    //     }
+    //     cardbigGroup[ondragSection][ondragGroup].pop();
+    //     cardbigGroup[]
+    // }
     /*拖曳效果事件監聽*/
     let container = document.getElementById('container');
     container.addEventListener('dragstart', dragStart);
     container.addEventListener('dragenter', dragEnter);
-    container.addEventListener('dragleave',dragLeave);
+    container.addEventListener('dragleave', dragLeave);
+    // container.addEventListener('dragend',dragEnd)
     // let spadeFinish = document.getElementById('spade');
     // let heartFinish = document.getElementById('heart');
     // let diamondFinish = document.getElementById('diamond');
