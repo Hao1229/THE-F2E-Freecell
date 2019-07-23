@@ -186,16 +186,17 @@ function startGame() {
             temporaryDeck.className = 'cardArea mr-4 bg-secondary rounded ';
             temporaryDeck.status = 'temporary'
             temporaryDeck.group = index
-            item.forEach(function(el,num){
+            item.forEach(function (el, num) {
                 let cardImg = document.createElement('img');
                 cardImg.draggable = true
                 cardImg.card = el;
                 cardImg.status = 'temporary';
                 cardImg.group = index;
+                cardImg.section = ''
                 cardImg.src = `pokerimg/card-${judgeColor(el)}-${el % 13}.svg`;
                 temporaryDeck.appendChild(cardImg);
             })
-        
+
             temporary.appendChild(temporaryDeck);
         })
     }
@@ -214,16 +215,6 @@ function startGame() {
 
     }
 
-    /*擺放卡片規則判斷*/
-    if (!isFinished && !isTemporary) {
-        let dragColor = Math.ceil(ondragCard / 13)
-        let dropColor = Math.ceil(ondropCard / 13)
-        let followRules = dragColor !== dropColor && dragColor + dropColor !== 5 && ((ondragCard % 13 - ondropCard % 13 == -1) || (ondragCard % 13 == 12 && ondropCard % 13 == 0))
-       
-    }
-
-
-
 
     /*拖曳效果各事件觸發函式*/
     function dragStart(e) {
@@ -234,34 +225,38 @@ function startGame() {
         ondragCard = e.target.card;
         ondragGroup = e.target.group;
         ondragSection = e.target.section;
-        // console.log('抓起的牌',ondragCard)
+        console.log(ondragSection)
+        // console.log('抓起的牌', ondragCard, ondragGroup, ondragSection)
     };
 
     function dragEnter(e) {
         e.defaultPrevented;
-        
+
         if (e.target.id === 'gamingArea') {
             return
         }
         if (e.target.status === 'finished') {
             isFinished = true
-            
+
         }
         if (e.target.status === 'temporary') {
             isTemporary = true
-            console.log('是否進入暫存區',isTemporary,ondropGroup,e.target)
+            // console.log('是否進入暫存區',isTemporary,ondropGroup,e.target)
         }
         ondropCard = e.target.card;
         ondropGroup = e.target.group;
         ondropSection = e.target.section;
+        // console.log(ondropGroup,ondropSection)
+
         if (ondropCard === ondragCard) {
             return
         }
-        
+        if(e.target.card === undefined){return}
+
     };
 
     function dragLeave(e) {
-        if(e.target.status !== 'finished' && e.target.status !== 'temporary'){
+        if (e.target.status !== 'finished' && e.target.status !== 'temporary') {
             isFinished = false;
             isTemporary = false;
         }
@@ -273,25 +268,40 @@ function startGame() {
             isTemporary = true
             isFinished = false
         }
-       
+        // console.log(e.target)
     };
 
     function dragEnd(e) {
         if (isgamePause) {
             return
         }
-        if (!isFinished && !isTemporary) {
-            let moveCard = cardbigGroup[ondragSection][ondragGroup].pop();
-            cardbigGroup[ondropSection][ondropGroup].push(moveCard);
-            // console.log(cardbigGroup[ondragSection][ondragGroup],moveCard,cardbigGroup[ondropSection][ondropGroup])
+        if (isTemporary) {
+            if (temporaryArea[ondropGroup].length == 1) { return };
+            cardbigGroup[ondragSection][ondragGroup].pop();
+            temporaryArea[ondropGroup].push(ondragCard);
+            refreshWindow();
+            isTemporary = false
+            
         }
+        if (!isTemporary && !isFinished) {
+            let dragColor = Math.ceil(ondragCard / 13)
+            let dropColor = Math.ceil(ondropCard / 13)
+            let followRules = dragColor !== dropColor && dragColor + dropColor !== 5 && (ondropCard % 13 == (ondragCard % 13) + 1 || (ondragCard % 13 == 12 && ondropCard % 13 == 0));
+            if (followRules) {
+                if (temporaryArea[ondragGroup].length == 1) {
+                    temporaryArea[ondragGroup].pop();
+                    cardbigGroup[ondropSection][ondropGroup].push(ondragCard)
+                }else if(cardbigGroup[ondragSection][ondragGroup].length > 0){
+                    cardbigGroup[ondragSection][ondragGroup].pop();
+                    cardbigGroup[ondropSection][ondropGroup].push(ondragCard)
+                    // console.log(cardbigGroup[ondragSection][ondragGroup].length)
+                }
+                
+            }
+            refreshWindow();
+        }
+        // console.log(cardbigGroup[ondropSection][ondropGroup])
 
-        if(isTemporary && temporaryArea[ondropGroup].length<1){
-            let moveCard = cardbigGroup[ondragSection][ondragGroup].pop();
-            temporaryArea[ondropGroup].push(moveCard); 
-        }
-        console.log(temporaryArea)
-        refreshWindow();
     }
 
 
@@ -305,6 +315,5 @@ function startGame() {
     // let heartFinish = document.getElementById('heart');
     // let diamondFinish = document.getElementById('diamond');
     // let clubFinish = document.getElementById('club');
-
 }
 startGame();
