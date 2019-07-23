@@ -20,6 +20,9 @@ function startGame() {
     ondragGroup = null  //負責儲存被抓取卡片所在的排數
     ondragSection = null //負責儲存被抓取卡片所在的區域
     ondragColor = null //負責儲存被抓取卡片的花色
+    // ondragtempCard = null //負責儲存暫存區被抓取卡片的數字
+    // ondragtempColor = null //負責儲存暫存區被抓取卡片的花色
+    // ondragtempGroup = null //負責儲存暫存區被抓取卡片所在的格數
     ondropCard = null   //負責儲存被堆疊的卡片數字
     ondropGroup = null  //負責儲存被堆疊的卡片所在排數
     ondropSection = null //負責儲存被堆疊的卡片所在區域
@@ -173,7 +176,7 @@ function startGame() {
             completedDeck.innerHTML = `<img src="icons/${sortColor(index)}-24px.svg" style="opacity: 0.8">`
             completedDeck.id = `${sortColor(index)}`
             completedDeck.group = index
-            item.forEach(function(el,num){
+            item.forEach(function (el, num) {
                 let cardImg = document.createElement('img');
                 cardImg.draggable = false
                 cardImg.card = el;
@@ -206,6 +209,7 @@ function startGame() {
                 cardImg.status = 'temporary';
                 cardImg.group = index;
                 cardImg.section = ''
+                cardImg.color = judgeColor(el);
                 cardImg.src = `pokerimg/card-${judgeColor(el)}-${el % 13}.svg`;
                 temporaryDeck.appendChild(cardImg);
             })
@@ -229,7 +233,7 @@ function startGame() {
     }
 
     /*清空拖曳變數*/
-    function clear(){
+    function clear() {
         ondragSection = null;
         ondragGroup = null;
         ondropGroup = null;
@@ -246,12 +250,12 @@ function startGame() {
         ondragCard = e.target.card;
         ondragGroup = e.target.group;
         ondragSection = e.target.section;
-        ondragColor = e.target.color
-        // console.log(ondragColor)
+        ondragColor = e.target.color;
     };
 
     function dragEnter(e) {
         e.defaultPrevented;
+        //  console.log('ondrop',ondropGroup,ondropSection,'ondrag',ondragGroup,ondragSection)
         if (e.target.id === 'gamingArea') {
             return
         }
@@ -263,19 +267,18 @@ function startGame() {
             isTemporary = true
             // console.log('是否進入暫存區',isTemporary,ondropGroup,e.target)
         }
-        if(e.target.status === 'finished' && e.target.id !== ondragColor){
+        if (e.target.status === 'finished' && e.target.id !== ondragColor) {
             return
         }
         ondropCard = e.target.card;
         ondropGroup = e.target.group;
         ondropSection = e.target.section;
-        // console.log(ondropGroup,ondropSection)
 
         if (ondropCard === ondragCard) {
             return
         }
-        // if(e.target.card === undefined){return}
-        
+        if (e.target.card === undefined) { return }
+
     };
 
     function dragLeave(e) {
@@ -304,7 +307,7 @@ function startGame() {
             temporaryArea[ondropGroup].push(ondragCard);
             refreshWindow();
             isTemporary = false
-            
+
         }
         // if(isFinished){
 
@@ -315,22 +318,22 @@ function startGame() {
             let dropColor = Math.ceil(ondropCard / 13)
             let followRules = dragColor !== dropColor && dragColor + dropColor !== 5 && (ondropCard % 13 == (ondragCard % 13) + 1 || (ondragCard % 13 == 12 && ondropCard % 13 == 0));
             if (followRules) {
-                if (temporaryArea[ondragGroup].length == 1 && ondragSection == null) {
+                if (temporaryArea[ondragGroup].indexOf(ondragCard) > -1) {
                     temporaryArea[ondragGroup].pop();
                     cardbigGroup[ondropSection][ondropGroup].push(ondragCard)
                     clear()
-                }else if(cardbigGroup[ondragSection][ondragGroup].length > 0){
+                } else if (cardbigGroup[ondragSection][ondragGroup].length > 0) {
                     cardbigGroup[ondragSection][ondragGroup].pop();
                     cardbigGroup[ondropSection][ondropGroup].push(ondragCard)
                     clear()
                     // console.log(cardbigGroup[ondragSection][ondragGroup].length)
                 }
-                
+            
             }
             refreshWindow();
         }
-       
-        console.log(ondragSection,ondragGroup,ondropGroup,ondropSection)
+
+        // console.log(ondragSection,ondragGroup,ondropGroup,ondropSection)
     }
 
 
@@ -345,4 +348,4 @@ function startGame() {
     // let diamondFinish = document.getElementById('diamond');
     // let clubFinish = document.getElementById('club');
 }
-startGame();
+startGame()
