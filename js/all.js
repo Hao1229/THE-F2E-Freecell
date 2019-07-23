@@ -19,6 +19,7 @@ function startGame() {
     let ondragCard = null  // 負責儲存被抓取卡片的數字
     ondragGroup = null  //負責儲存被抓取卡片所在的排數
     ondragSection = null //負責儲存被抓取卡片所在的區域
+    ondragColor = null //負責儲存被抓取卡片的花色
     ondropCard = null   //負責儲存被堆疊的卡片數字
     ondropGroup = null  //負責儲存被堆疊的卡片所在排數
     ondropSection = null //負責儲存被堆疊的卡片所在區域
@@ -133,6 +134,7 @@ function startGame() {
                     cardImg.card = el;
                     cardImg.section = sectionNum;
                     cardImg.group = index;
+                    cardImg.color = judgeColor(el)
                     cardImg.src = `pokerimg/card-${judgeColor(el)}-${el % 13}.svg`;
                     if (!isgamePause && num + 1 == item.length) {
                         oneCard.draggable = true;
@@ -170,6 +172,17 @@ function startGame() {
             completedDeck.status = 'finished'
             completedDeck.innerHTML = `<img src="icons/${sortColor(index)}-24px.svg" style="opacity: 0.8">`
             completedDeck.id = `${sortColor(index)}`
+            completedDeck.group = index
+            item.forEach(function(el,num){
+                let cardImg = document.createElement('img');
+                cardImg.draggable = false
+                cardImg.card = el;
+                cardImg.status = 'finished';
+                cardImg.group = index;
+                cardImg.section = ''
+                cardImg.src = `pokerimg/card-${judgeColor(el)}-${el % 13}.svg`;
+                completedDeck.appendChild(cardImg)
+            })
             finished.appendChild(completedDeck);
 
         })
@@ -215,6 +228,14 @@ function startGame() {
 
     }
 
+    /*清空拖曳變數*/
+    function clear(){
+        ondragSection = null;
+        ondragGroup = null;
+        ondropGroup = null;
+        ondropSection = null;
+    }
+
 
     /*拖曳效果各事件觸發函式*/
     function dragStart(e) {
@@ -225,13 +246,12 @@ function startGame() {
         ondragCard = e.target.card;
         ondragGroup = e.target.group;
         ondragSection = e.target.section;
-        console.log(ondragSection)
-        // console.log('抓起的牌', ondragCard, ondragGroup, ondragSection)
+        ondragColor = e.target.color
+        // console.log(ondragColor)
     };
 
     function dragEnter(e) {
         e.defaultPrevented;
-
         if (e.target.id === 'gamingArea') {
             return
         }
@@ -243,6 +263,9 @@ function startGame() {
             isTemporary = true
             // console.log('是否進入暫存區',isTemporary,ondropGroup,e.target)
         }
+        if(e.target.status === 'finished' && e.target.id !== ondragColor){
+            return
+        }
         ondropCard = e.target.card;
         ondropGroup = e.target.group;
         ondropSection = e.target.section;
@@ -251,8 +274,8 @@ function startGame() {
         if (ondropCard === ondragCard) {
             return
         }
-        if(e.target.card === undefined){return}
-
+        // if(e.target.card === undefined){return}
+        
     };
 
     function dragLeave(e) {
@@ -283,25 +306,31 @@ function startGame() {
             isTemporary = false
             
         }
+        // if(isFinished){
+
+        // }
+
         if (!isTemporary && !isFinished) {
             let dragColor = Math.ceil(ondragCard / 13)
             let dropColor = Math.ceil(ondropCard / 13)
             let followRules = dragColor !== dropColor && dragColor + dropColor !== 5 && (ondropCard % 13 == (ondragCard % 13) + 1 || (ondragCard % 13 == 12 && ondropCard % 13 == 0));
             if (followRules) {
-                if (temporaryArea[ondragGroup].length == 1) {
+                if (temporaryArea[ondragGroup].length == 1 && ondragSection == null) {
                     temporaryArea[ondragGroup].pop();
                     cardbigGroup[ondropSection][ondropGroup].push(ondragCard)
+                    clear()
                 }else if(cardbigGroup[ondragSection][ondragGroup].length > 0){
                     cardbigGroup[ondragSection][ondragGroup].pop();
                     cardbigGroup[ondropSection][ondropGroup].push(ondragCard)
+                    clear()
                     // console.log(cardbigGroup[ondragSection][ondragGroup].length)
                 }
                 
             }
             refreshWindow();
         }
-        // console.log(cardbigGroup[ondropSection][ondropGroup])
-
+       
+        console.log(ondragSection,ondragGroup,ondropGroup,ondropSection)
     }
 
 
