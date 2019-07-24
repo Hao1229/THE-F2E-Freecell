@@ -303,11 +303,11 @@ function startGame() {
 
         if (isFinished) {
             if (ondropColor == ondragColor) {
-                if ((finishArea[ondropGroup].length + 1 == ondragCard % 13 || finishArea[ondragCard].length - 12 == ondragCard % 13) && temporaryArea[ondragGroup].indexOf(ondragCard) > -1) {
+                if ((finishArea[ondropGroup].length + 1 == ondragCard % 13 || finishArea[ondropGroup].length - 12 == ondragCard % 13) && temporaryArea[ondragGroup].indexOf(ondragCard) > -1) {
                     finishArea[ondropGroup].push(ondragCard);
                     temporaryArea[ondragGroup].pop();
                     clear()
-                } else if ((finishArea[ondropGroup].length + 1 == ondragCard % 13 || finishArea[ondragCard].length - 12 == ondragCard % 13) && temporaryArea[ondragGroup].indexOf(ondragCard) < 0) {
+                } else if ((finishArea[ondropGroup].length + 1 == ondragCard % 13 || finishArea[ondropGroup].length - 12 == ondragCard % 13) && temporaryArea[ondragGroup].indexOf(ondragCard) < 0) {
                     cardbigGroup[ondragSection][ondragGroup].pop();
                     finishArea[ondropGroup].push(ondragCard);
                     clear()
