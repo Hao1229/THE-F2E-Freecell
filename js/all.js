@@ -311,6 +311,8 @@ function startGame() {
                     cardbigGroup[ondragSection][ondragGroup].pop();
                     finishArea[ondropGroup].push(ondragCard);
                     clear()
+                } else if (finishArea.forEach(function (item) { item.length == 13 })) {
+                    alert('恭喜破關!!!!')
                 }
             }
             refreshWindow();
@@ -364,7 +366,42 @@ function startGame() {
     }
 
     /*遊戲暫停功能製作*/
+    let timerId = '';
+    let startTime = 0;
 
+    let gamePause = document.getElementById('gamePause');
+    gamePause.addEventListener('click', timeStop);
+    function timeStop() {
+        isgamePause = !isgamePause
+        if(isgamePause == false){
+            startTimer();
+            gamePause.innerHTML = `<img src="icons/ic_pause_24px.svg"
+            class="mr-1"><span>PAUSE</span>`
+        }else{
+            clearInterval(timerId);
+            timerId = '';
+            gamePause.innerHTML = `<i class="fas fa-play mr-1 text-white fa-sm"></i><span>START</span>`
+        }
+    }
+
+    /*計時功能製作*/
+    let Timer = document.getElementById('timer')
+    function startTimer() {
+        timerId = setInterval(function () {
+            startTime += 1
+            let minutes = Math.floor(startTime/60);
+            let seconds = startTime % 60;
+            if(minutes < 10){
+                minutes = `0${minutes}`
+            }
+            if(seconds < 10){
+                seconds = `0${seconds}`
+            }
+            Timer.textContent = `${minutes}:${seconds}`
+        }, 1000) 
+
+    }
+    startTimer()
 }
 startGame()
 
