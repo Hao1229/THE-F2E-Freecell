@@ -20,9 +20,6 @@ function startGame() {
     ondragGroup = null  //負責儲存被抓取卡片所在的排數
     ondragSection = null //負責儲存被抓取卡片所在的區域
     ondragColor = null //負責儲存被抓取卡片的花色
-    // ondragtempCard = null //負責儲存暫存區被抓取卡片的數字
-    // ondragtempColor = null //負責儲存暫存區被抓取卡片的花色
-    // ondragtempGroup = null //負責儲存暫存區被抓取卡片所在的格數
     ondropCard = null   //負責儲存被堆疊的卡片數字
     ondropGroup = null  //負責儲存被堆疊的卡片所在排數
     ondropSection = null //負責儲存被堆疊的卡片所在區域
@@ -111,15 +108,7 @@ function startGame() {
                 cardGroup.section = sectionNum;
                 item.forEach(function (el, num) {
                     let oneCard = document.createElement('div');
-                    // if (!isgamePause && num + 1 == item.length) {
-                    //     oneCard.draggable = true;
-                    //     cardImg.draggable = true
-                    // }
-                    // oneCard.card = `${judgeColor(el)} ${el % 13}`;
                     oneCard.className = 'cardArea absolute';
-                    // oneCard.color = judgeColor(el);
-                    // oneCard.section = sectionNum;
-                    // oneCard.group = index;
                     if (!isRefresh) {
                         oneCard.style.transition = 'all .3s'
                         oneCard.style.top = '-1000px';
@@ -132,7 +121,6 @@ function startGame() {
                         oneCard.style.top = num * 30 + 'px';
                         oneCard.style.left = '0px'
                     }
-                    // oneCard.innerHTML = `<img src="pokerimg/card-${judgeColor(el)}-${el % 13}.svg" draggable = false class="${judgeColor(el)} ${el % 13}">`
                     let cardImg = document.createElement('img');
                     cardImg.draggable = false
                     cardImg.card = el;
@@ -281,7 +269,7 @@ function startGame() {
             return
         }
         // if (e.target.card === undefined) { return }
-        console.log(ondropColor, ondragColor, ondropGroup)
+        console.log(e.target.section, e.target.group)
     };
 
     function dragLeave(e) {
@@ -313,22 +301,6 @@ function startGame() {
 
         }
 
-        // if (isFinished) {
-        //     if (finishArea[ondropGroup].length +1 == ondragCard % 13 && temporaryArea[ondragGroup].indexOf(ondragCard) > -1 ) {
-        //         finishArea[ondropGroup].push(ondragCard);
-        //         temporaryArea[ondragGroup].pop();
-        //         // clear()
-        //         console.log(finishArea[ondropGroup])
-        //     }
-        //     else if (finishArea[ondropGroup].length +1 == ondragCard % 13 && temporaryArea[ondragGroup].indexOf(ondragCard) < 0) {
-        //         cardbigGroup[ondragSection][ondragGroup].pop();
-        //         finishArea[ondropGroup].push(ondragCard);
-        //         // clear()
-        //         console.log(finishArea[ondropGroup])
-        //     }
-        //     refreshWindow();
-        // }
-
         if (isFinished) {
             if (ondropColor == ondragColor) {
                 if ((finishArea[ondropGroup].length + 1 == ondragCard % 13 || finishArea[ondragCard].length - 12 == ondragCard % 13) && temporaryArea[ondragGroup].indexOf(ondragCard) > -1) {
@@ -359,7 +331,16 @@ function startGame() {
                     cardbigGroup[ondropSection][ondropGroup].push(ondragCard)
                     clear()
                 }
-
+            } else if (cardbigGroup[ondropSection][ondropGroup].length == 0) {
+                if (temporaryArea[ondragGroup].indexOf(ondragCard) > -1) {
+                    temporaryArea[ondragGroup].pop();
+                    cardbigGroup[ondropSection][ondropGroup].push(ondragCard)
+                    clear()
+                } else if (cardbigGroup[ondragSection][ondragGroup].length > 0) {
+                    cardbigGroup[ondragSection][ondragGroup].pop();
+                    cardbigGroup[ondropSection][ondropGroup].push(ondragCard)
+                    clear()
+                }
             }
             refreshWindow();
         }
@@ -373,10 +354,17 @@ function startGame() {
     container.addEventListener('dragstart', dragStart);
     container.addEventListener('dragenter', dragEnter);
     container.addEventListener('dragleave', dragLeave);
-    container.addEventListener('dragend', dragEnd)
-    // let spadeFinish = document.getElementById('spade');
-    // let heartFinish = document.getElementById('heart');
-    // let diamondFinish = document.getElementById('diamond');
-    // let clubFinish = document.getElementById('club');
+    container.addEventListener('dragend', dragEnd);
+
+    /*重新開始功能製作*/
+    let restart = document.querySelector('.js-restart')
+    restart.addEventListener('click', reStart);
+    function reStart() {
+        window.location.reload();
+    }
+
+    /*遊戲暫停功能製作*/
+
 }
 startGame()
+
