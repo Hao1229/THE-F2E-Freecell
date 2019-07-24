@@ -15,6 +15,9 @@ function startGame() {
         [], //6張
         [] //6張
     ];
+
+    let backStep = [] //負責儲存回朔的資料
+
     /*拖曳效果數值儲存*/
     let ondragCard = null  // 負責儲存被抓取卡片的數字
     ondragGroup = null  //負責儲存被抓取卡片所在的排數
@@ -235,6 +238,28 @@ function startGame() {
         ondropSection = null;
     }
 
+    /*回朔功能製作*/
+    let goBack = document.getElementById('back')
+    goBack.addEventListener('click', Undo)
+    function Undo() {
+        let backfirstStep = backStep.pop();
+        if (backfirstStep.active == 'putinTemp') {
+            temporaryArea[backfirstStep.to.cardGroup].pop();
+            cardbigGroup[backfirstStep.from.cardSection][backfirstStep.from.cardGroup].push(backfirstStep.from.cardNum)
+        } else if (backfirstStep.active == 'putinFinish') {
+            if (backfirstStep.from.cardSection === '') {
+                finishArea[backfirstStep.to.cardGroup].pop();
+                temporaryArea[backfirstStep.from.cardGroup].push(backfirstStep.from.cardNum)
+            } else if (backfirstStep.from.cardSection >= 0) {
+               finishArea[backfirstStep.to.cardGroup].pop();
+                cardbigGroup[backfirstStep.from.cardSection][backfirstStep.from.cardGroup].push(backfirstStep.from.cardNum)
+            }
+        }else if (backfirstStep.active == 'putinRandom'){
+            cardbigGroup[backfirstStep.to.cardSection][backfirstStep.to.cardGroup].pop();
+            cardbigGroup[backfirstStep.from.cardSection][backfirstStep.from.cardGroup].push(backfirstStep.from.cardNum)
+        }
+        refreshWindow()
+    }
 
     /*拖曳效果各事件觸發函式*/
     function dragStart(e) {
@@ -269,7 +294,7 @@ function startGame() {
             return
         }
         // if (e.target.card === undefined) { return }
-        console.log(e.target.section, e.target.group)
+
     };
 
     function dragLeave(e) {
@@ -294,8 +319,25 @@ function startGame() {
         }
         if (isTemporary) {
             if (temporaryArea[ondropGroup].length == 1) { return };
+            backStep.push({
+                from: {
+                    cardNum: ondragCard,
+                    cardGroup: ondragGroup,
+                    cardSection: ondragSection,
+                    cardColor: ondragColor
+                },
+                to: {
+                    cardNum: ondropCard,
+                    cardGroup: ondropGroup,
+                    cardSection: ondropSection,
+                    cardColor: ondropColor
+                },
+
+                active: 'putinTemp'
+            });
             cardbigGroup[ondragSection][ondragGroup].pop();
             temporaryArea[ondropGroup].push(ondragCard);
+            clear()
             refreshWindow();
             isTemporary = false
 
@@ -304,10 +346,42 @@ function startGame() {
         if (isFinished) {
             if (ondropColor == ondragColor) {
                 if ((finishArea[ondropGroup].length + 1 == ondragCard % 13 || finishArea[ondropGroup].length - 12 == ondragCard % 13) && temporaryArea[ondragGroup].indexOf(ondragCard) > -1) {
+                    backStep.push({
+                        from: {
+                            cardNum: ondragCard,
+                            cardGroup: ondragGroup,
+                            cardSection: ondragSection,
+                            cardColor: ondragColor
+                        },
+                        to: {
+                            cardNum: ondropCard,
+                            cardGroup: ondropGroup,
+                            cardSection: ondropSection,
+                            cardColor: ondropColor
+                        },
+
+                        active: 'putinFinish'
+                    });
                     finishArea[ondropGroup].push(ondragCard);
                     temporaryArea[ondragGroup].pop();
                     clear()
                 } else if ((finishArea[ondropGroup].length + 1 == ondragCard % 13 || finishArea[ondropGroup].length - 12 == ondragCard % 13) && temporaryArea[ondragGroup].indexOf(ondragCard) < 0) {
+                    backStep.push({
+                        from: {
+                            cardNum: ondragCard,
+                            cardGroup: ondragGroup,
+                            cardSection: ondragSection,
+                            cardColor: ondragColor
+                        },
+                        to: {
+                            cardNum: ondropCard,
+                            cardGroup: ondropGroup,
+                            cardSection: ondropSection,
+                            cardColor: ondropColor
+                        },
+
+                        active: 'putinFinish'
+                    });
                     cardbigGroup[ondragSection][ondragGroup].pop();
                     finishArea[ondropGroup].push(ondragCard);
                     clear()
@@ -315,6 +389,7 @@ function startGame() {
                     alert('恭喜破關!!!!')
                 }
             }
+            isFinished = false
             refreshWindow();
         }
 
@@ -325,26 +400,91 @@ function startGame() {
             let followRules = dragColor !== dropColor && dragColor + dropColor !== 5 && (ondropCard % 13 == (ondragCard % 13) + 1 || (ondragCard % 13 == 12 && ondropCard % 13 == 0));
             if (followRules) {
                 if (temporaryArea[ondragGroup].indexOf(ondragCard) > -1) {
+                    backStep.push({
+                        from: {
+                            cardNum: ondragCard,
+                            cardGroup: ondragGroup,
+                            cardSection: ondragSection,
+                            cardColor: ondragColor
+                        },
+                        to: {
+                            cardNum: ondropCard,
+                            cardGroup: ondropGroup,
+                            cardSection: ondropSection,
+                            cardColor: ondropColor
+                        },
+
+                        active: 'putinRandom'
+                    });
                     temporaryArea[ondragGroup].pop();
                     cardbigGroup[ondropSection][ondropGroup].push(ondragCard)
                     clear()
                 } else if (cardbigGroup[ondragSection][ondragGroup].length > 0) {
+                    backStep.push({
+                        from: {
+                            cardNum: ondragCard,
+                            cardGroup: ondragGroup,
+                            cardSection: ondragSection,
+                            cardColor: ondragColor
+                        },
+                        to: {
+                            cardNum: ondropCard,
+                            cardGroup: ondropGroup,
+                            cardSection: ondropSection,
+                            cardColor: ondropColor
+                        },
+
+                        active: 'putinRandom'
+                    });
                     cardbigGroup[ondragSection][ondragGroup].pop();
                     cardbigGroup[ondropSection][ondropGroup].push(ondragCard)
                     clear()
                 }
             } else if (cardbigGroup[ondropSection][ondropGroup].length == 0) {
                 if (temporaryArea[ondragGroup].indexOf(ondragCard) > -1) {
+                    backStep.push({
+                        from: {
+                            cardNum: ondragCard,
+                            cardGroup: ondragGroup,
+                            cardSection: ondragSection,
+                            cardColor: ondragColor
+                        },
+                        to: {
+                            cardNum: ondropCard,
+                            cardGroup: ondropGroup,
+                            cardSection: ondropSection,
+                            cardColor: ondropColor
+                        },
+
+                        active: 'putinRandom'
+                    });
                     temporaryArea[ondragGroup].pop();
                     cardbigGroup[ondropSection][ondropGroup].push(ondragCard)
                     clear()
                 } else if (cardbigGroup[ondragSection][ondragGroup].length > 0) {
+                    backStep.push({
+                        from: {
+                            cardNum: ondragCard,
+                            cardGroup: ondragGroup,
+                            cardSection: ondragSection,
+                            cardColor: ondragColor
+                        },
+                        to: {
+                            cardNum: ondropCard,
+                            cardGroup: ondropGroup,
+                            cardSection: ondropSection,
+                            cardColor: ondropColor
+                        },
+
+                        active: 'putinRandom'
+                    });
                     cardbigGroup[ondragSection][ondragGroup].pop();
                     cardbigGroup[ondropSection][ondropGroup].push(ondragCard)
                     clear()
                 }
             }
             refreshWindow();
+
         }
 
 
@@ -373,11 +513,11 @@ function startGame() {
     gamePause.addEventListener('click', timeStop);
     function timeStop() {
         isgamePause = !isgamePause
-        if(isgamePause == false){
+        if (isgamePause == false) {
             startTimer();
             gamePause.innerHTML = `<img src="icons/ic_pause_24px.svg"
             class="mr-1"><span>PAUSE</span>`
-        }else{
+        } else {
             clearInterval(timerId);
             timerId = '';
             gamePause.innerHTML = `<i class="fas fa-play mr-1 text-white fa-sm"></i><span>START</span>`
@@ -389,16 +529,16 @@ function startGame() {
     function startTimer() {
         timerId = setInterval(function () {
             startTime += 1
-            let minutes = Math.floor(startTime/60);
+            let minutes = Math.floor(startTime / 60);
             let seconds = startTime % 60;
-            if(minutes < 10){
+            if (minutes < 10) {
                 minutes = `0${minutes}`
             }
-            if(seconds < 10){
+            if (seconds < 10) {
                 seconds = `0${seconds}`
             }
             Timer.textContent = `${minutes}:${seconds}`
-        }, 1000) 
+        }, 1000)
 
     }
     startTimer()
