@@ -242,6 +242,9 @@ function startGame() {
     let goBack = document.getElementById('back')
     goBack.addEventListener('click', Undo)
     function Undo() {
+        if(isgamePause){
+            return
+        }
         let backfirstStep = backStep.pop();
         if (backfirstStep.active == 'putinTemp') {
             temporaryArea[backfirstStep.to.cardGroup].pop();
@@ -385,9 +388,7 @@ function startGame() {
                     cardbigGroup[ondragSection][ondragGroup].pop();
                     finishArea[ondropGroup].push(ondragCard);
                     clear()
-                } else if (finishArea.forEach(function (item) { item.length == 13 })) {
-                    alert('恭喜破關!!!!')
-                }
+                } 
             }
             isFinished = false
             refreshWindow();
@@ -542,6 +543,18 @@ function startGame() {
 
     }
     startTimer()
+
+    /*完成回饋*/
+    let finishalert1 = maingameArea.every(function(item){
+        return item.length === 0
+    })
+    let finishalert2 = temporaryArea.every(function(item){
+        return item.length === 0
+    })
+    if(finishalert1 && finishalert2){
+        alert('恭喜過關!!!!')
+    }
+   
 }
 startGame()
 
