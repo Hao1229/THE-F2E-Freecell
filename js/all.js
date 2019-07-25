@@ -225,6 +225,16 @@ function startGame() {
         putCard();
         storefinishCard();
         storetempCard();
+         /*完成回饋*/
+    let finishalert1 = maingameArea.every(function(item){
+        return item.length === 0
+    })
+    let finishalert2 = temporaryArea.every(function(item){
+        return item.length === 0
+    })
+    if(finishalert1 && finishalert2){
+        alert('恭喜過關!!!!')
+    }
 
     }
 
@@ -544,16 +554,7 @@ function startGame() {
     }
     startTimer()
 
-    /*完成回饋*/
-    let finishalert1 = maingameArea.every(function(item){
-        return item.length === 0
-    })
-    let finishalert2 = temporaryArea.every(function(item){
-        return item.length === 0
-    })
-    if(finishalert1 && finishalert2){
-        alert('恭喜過關!!!!')
-    }
+   
    
 }
 startGame()
